@@ -14,6 +14,19 @@ Our DFNN model, trained using OpenAI's embeddings, outperformed ChatGPT's zero- 
 Understanding the connection between narrative language and post-traumatic outcomes enhances support for at-risk mothers, benefiting both mother and child.
 
 # Repository Contents
+
+## Papaer LateX Documents
+`empty.eps`
+
+`sn-article.tex`
+
+`sn-bibliography.bib`
+
+`sn-jnl.cls`
+
+`images` - figures of the manuscript.
+
+
 ## Running the Code
 `[harvard]_chatgpt.py` - implementation of Models \#1 to \#3 of the paper. These are OpenAI based models including ChatGPT.
 
@@ -22,7 +35,7 @@ This script also fine-tunes the selected LLMs on a classification task.
 
 `requirements.txt` - required python packages to run the code.
 
-`.env.example` - local variable and credentials needed to run the code.
+`.env.example` - variable and credentials needed to run the code.
 
 ## Miscellaneous
 Please send any questions you might have about the code and/or the algorithm to alon.bartal@biu.ac.il.
