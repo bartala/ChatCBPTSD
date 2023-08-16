@@ -2,3 +2,7 @@ openai
 tiktoken
 pandas
 numpy
+sentence-transformers
+transformers
+BioGPT
+sacremoses
