@@ -27,7 +27,7 @@ If you find this code useful for your research, please consider citing us:
 ```
 @article{Bartal2023ChatCB-PTSD,
   title     = {Collective Memory of Dynamic Events: Analyzing Persistence of Attention to Bankruptcy Events},
-  author    = {Jagodnik, Kathleen M., and Dekel, Sharon and Bartal, Alon},
+  author    = {Bartal, Alon and Jagodnik, Kathleen M. and Dekel, Sharon},
   journal   = {},
   volume    = {},
   number    = {},
