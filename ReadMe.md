@@ -1,17 +1,13 @@
 # ChatCB-PTSD
 
 ## Overview
-Maternal mental health is a critical concern during and after childbirth, affecting both mothers and their children. 
-Untreated postpartum psychopathology can result in child neglect, leading to substantial pediatric health expenses and societal costs. 
-Following childbirth, some women experience childbirth-related post-traumatic stress disorder (CB-PTSD). 
-While postpartum depression is routinely screened, there is no standardized protocol for identifying those at risk of CB-PTSD. 
-Recent computational advances in free text analysis show promise for diagnosing psychiatric conditions.
-This study explores the potential of Chat Generative Pre-trained Transformer (ChatGPT), a large language model (LLM) developed by OpenAI, for the clinical task of screening for CB-PTSD by analyzing maternal narratives of childbirth experiences.
-We utilize the power of ChatGPT's `gpt-3.5-turbo-16k` LLM to classify narratives using zero-shot and few-shot learning.
-Additionally, we extract the numerical vector representation (embeddings) of narratives using the `text-embedding-ada-002` model via OpenAI’s API.
-Using these embeddings, we trained a densely connected feedforward neural network (DFNN) to detect CB-PTSD via narrative classification.
-Our DFNN model, trained using OpenAI's embeddings, outperformed ChatGPT's zero- and few-shot learning, and six previously published models trained on mental health and clinical domains.
-Understanding the connection between narrative language and post-traumatic outcomes enhances support for at-risk mothers, benefiting both mother and child.
+Free-text analysis using Machine Learning (ML)-based Natural Language Processing (NLP) shows promise for diagnosing psychiatric conditions. Chat Generative Pre-trained Transformer (ChatGPT) has demonstrated initial feasibility for this purpose; however, this work remains preliminary, and whether it can accurately assess mental illness remains to be determined. 
+This study examines ChatGPT’s utility to identify post-traumatic stress disorder following childbirth (CB-PTSD), a maternal postpartum mental illness affecting millions of women annually, with no standard screening protocol. 
+We explore ChatGPT’s potential to screen for CB-PTSD by analyzing maternal childbirth narratives as the sole data source. 
+By developing an ML model that utilizes ChatGPT’s knowledge, we identify CB-PTSD via narrative classification. 
+Our model outperformed  (F1 score: 0.82) ChatGPT and six previously published large language models trained on mental health or clinical domains data. 
+Our results suggest that ChatGPT can be harnessed to identify CB-PTSD.
+Our modeling approach can be generalized to other mental illness disorders.
 
 # Repository Contents
 
