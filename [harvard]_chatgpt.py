@@ -1,4 +1,12 @@
 
+
+# Associated Publication:
+# Bartal A, Jagodnik KM, Chan SD, Dekel S. (2023) ChatGPT Embeddings Can Be Used for Detecting Post-Traumatic Stress Following Childbirth Via Birth Stories. Scientific Reports.
+
+# Project Description:
+# Free-text analysis using Machine Learning (ML)-based Natural Language Processing (NLP) shows promise for diagnosing psychiatric conditions. Chat Generative Pre-trained Transformer (ChatGPT) has demonstrated initial feasibility for this purpose; however, this work remains preliminary, and whether it can accurately assess mental illness remains to be determined. This study examines ChatGPT’s utility to identify post-traumatic stress disorder following childbirth (CB-PTSD), a maternal postpartum mental illness affecting millions of women annually, with no standard screening protocol. Using a sample of 1,295 women who gave birth in the last six months and were 18+ years old, recruited through hospital announcements, social media, and professional organizations, Wwe explore ChatGPT’s potential to screen for CB-PTSD by analyzing maternal childbirth narratives as the sole data source. The PTSD Checklist for DSM-5 (PCL-5; cutoff 31) was used to assess CB-PTSD. By developing an ML model that utilizes ChatGPT’s knowledge, we identify CB-PTSD via narrative classification. Our model outperformed (F1 score: 0.82) ChatGPT and six previously published large language models (LLMs) trained on mental health or clinical domains data, suggesting that ChatGPT can be harnessed to identify CB-PTSD. Our modeling approach could be generalized to assess other mental health disorders.
+
+
 openai.organization = "" # complete credentials
 openai.api_key = "" # complete credentials
 
@@ -19,7 +27,7 @@ def get_embedding(text, model):
    return openai.Embedding.create(input = [text], model=model)['data'][0]['embedding']
 
 
-# classification
+# Classification
 def get_completion(prompt, model="gpt-3.5-turbo-16k",temperature=0):
     response = openai.ChatCompletion.create(
         model=model,
@@ -29,7 +37,7 @@ def get_completion(prompt, model="gpt-3.5-turbo-16k",temperature=0):
     return response.choices[0].message["content"]
 
 
-# create promt
+# Create prompt
 def return_few_shot_promt(text):
   prompt = f"""
               You are a Psychiatrists specialized in diagnosing and treating Post Traumatic Stress Disorder (PTSD).\
@@ -52,10 +60,7 @@ def return_few_shot_promt(text):
   return(prompt)
 
 
-
-
-
-# create promt
+# Create prompt
 def return_zero_shot_promt(text):
   prompt = f"""
               You are a Psychiatrists specialized in diagnosing and treating Post Traumatic Stress Disorder (PTSD).\
@@ -67,7 +72,7 @@ def return_zero_shot_promt(text):
   return(prompt)
 
 
-# count number of tokens
+# Count number of tokens
 encoding = tiktoken.get_encoding("cl100k_base")
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 
@@ -81,29 +86,30 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
 
 # Load the data
 
-# pcl-5 threshold
+# PCL-5 threshold
+# Value selected based on: Kruger-Gottschalk, A. et al. The German version of the Posttraumatic Stress Disorder Checklist for DSM-5 (PCL-5): Psychometric properties and diagnostic utility. BMC Psychiatry. 17, 1–9 (2017).
 threshold = 31
 
-# COVID dataset
+# COVID-19 Dataset: Recruitment from April 2020 to December 2020
 df_covid = pd.read_csv(os.path.join(PTH,"covid.csv"))
 df_covid['source'] = 'covid'
 
-# CBEx dataset
+# CBEx Dataset: Recruitment from November 2016 to July 2018
 df_cbex = pd.read_csv(os.path.join(PTH,"CBEx.csv"))
 df_cbex['source'] = 'CBEx'
 
 
-# a single dataframe of narrtatives of women with PCL-5 >=32 Only!
+# A single dataframe of narratives of women with PCL-5 >=31 Only
 all_df =  pd.concat([
                       df_covid[['record_id','spcl5_total', 'cb_delivery_narrative','pdi_total', 'source']],
                       df_cbex[['record_id','spcl5_total', 'cb_delivery_narrative','pdi_total','source']]
                     ])
 
-# remove sentences with less than 30 words
+# Remove sentences with fewer than 30 words
 all_df['n_words'] = all_df['cb_delivery_narrative'].str.split().apply(len)
 all_df = all_df[all_df['n_words'] >= 30]
 
-# set target variable
+# Set target variable
 all_df['y']=0
 all_df.loc[all_df['spcl5_total']>=threshold,'y'] = 1
 all_df['y'].value_counts()
@@ -118,23 +124,23 @@ for text in all_df['cb_delivery_narrative'].tolist():
 
 print(tokens * 'replace with tolen price per used model')
 
-"""# Classification with openai"""
+"""# Classification with OpenAI"""
 
-# select rows with examples for few shot learning
+# Select rows with examples for few-shot learning
 sick_narrative = all_df[all_df['spcl5_total'] > threshold].sample(n = 1)
 healthy_narrative = all_df[all_df['spcl5_total'] < threshold].sample(n = 1)
 
-# remove few-shot examples from original database
+# Remove few-shot examples from original database
 remove_ids = [ sick_narrative['record_id'].iloc[0], healthy_narrative['record_id'].iloc[0] ]
 all_df = all_df[~all_df['record_id'].isin(remove_ids)]
 
-# keep only narrative
+# Keep only narrative
 sick_narrative = sick_narrative['cb_delivery_narrative'].tolist()[0]
 healthy_narrative = healthy_narrative['cb_delivery_narrative'].tolist()[0]
 
 responce_labels = []
 
-"""## Zero-shot classification"""
+"""## Zero-Shot Classification"""
 
 i=0
 text = all_df.iloc[i]['cb_delivery_narrative']
@@ -160,7 +166,7 @@ df_zero_shot.columns = [['record_id','cb_delivery_narrative','source','y']]
 df_zero_shot.to_csv('all_df_chatgpt.csv', index=False)
 
 
-"""## Few-shot learning"""
+"""## Few-Shot Learning"""
 
 responce_labels = []
 
@@ -182,9 +188,9 @@ df_few_shot = pd.DataFrame(responce_labels)
 df_few_shot.columns = [['record_id','cb_delivery_narrative','source','y']]
 df_few_shot.to_csv('all_df_chatgpt.csv', index=False)
 
-"""# OpenAI: get embeddings"""
+"""# OpenAI: Get Embeddings"""
 
-# get embeddigns of narratives
+# Get embeddigns of narratives
 i  = 1
 ada_embedding = [] # length of embeddings is 1536
 for text in all_df['cb_delivery_narrative'].tolist():
@@ -193,13 +199,13 @@ for text in all_df['cb_delivery_narrative'].tolist():
   ada_embedding.append(embddings)
   i = i + 1
 
-# save embeddings
+# Save embeddings
 all_df['ada_embedding'] = ada_embedding
 all_df.to_csv(os.path.join(PTH,'embedded_CBPTSD_text-embedding-ada-002.csv'), index=False)
 
 """# Model 3
 
-## Help functions
+## Help Functions
 """
 
 import numpy as np
@@ -207,7 +213,7 @@ from sklearn.decomposition import PCA
 from numpy import dot
 from numpy.linalg import norm
 
-# hadamard product
+# Hadamard Product
 def vec_dist(v1,v2):
   v1 = np.array(v1)
   v2 = np.array(v2)
@@ -215,7 +221,7 @@ def vec_dist(v1,v2):
   return(res)
 
 
-# normalize data
+# Normalize Data
 from sklearn.preprocessing import StandardScaler
 
 # Create a StandardScaler object
@@ -230,26 +236,27 @@ def norma(data):
 
   return(normalized_data_df)
 
-"""## Load data"""
+"""## Load Data"""
 
 # load the data and set a threshold
 all_df = pd.read_csv(os.path.join(PTH,'data/embedded_CBPTSD_text-embedding-ada-002.csv'))
 
+# Specify PCL-5 Questionnaire Threshold = 31
 threshold = 31
 
-# set target variable
+# Set target variable
 all_df['y']=0
 all_df.loc[all_df['spcl5_total']>=threshold,'y'] = 1
 all_df['y'].value_counts()
 
 
-"""## Extrect numeric vectors of narratives and label classes"""
+"""## Extract Numeric Vectors of Narratives and Label Classes"""
 
 all_embeddings = all_df['ada_embedding'].apply(ast.literal_eval).apply(lambda x: [float(val) for val in x])
 
 all_embeddings = pd.DataFrame(all_embeddings.tolist())
 
-# normalize data
+# Normalize Data
 all_embeddings = norma(all_embeddings)
 
 all_embeddings['y'] = all_df['y'].tolist()
@@ -263,20 +270,20 @@ pos_embeddings.drop('y',axis=1, inplace = True)
 
 neg_embeddings.drop('y',axis=1, inplace = True)
 
-"""## Data balanceing"""
+"""## Data Balancing"""
 
-# random sampling from the negative class to get the same number of records as the positive class
+# Random sampling from the Negative class to get the same number of records as the Positive class
 X_pos = pos_embeddings
 
 X_neg =  neg_embeddings.sample(n = len(X_pos))
 
 print(len(X_neg), len(X_pos))
 
-# reset index
+# Reset Index
 X_neg = X_neg.reset_index(drop=True)
 X_pos = X_pos.reset_index(drop=True)
 
-# remove S sentences for testing later
+# Remove S sentences for testing later
 s = 20
 
 pos_test_sent = X_pos.sample(s)
@@ -287,9 +294,9 @@ X_neg =  X_neg.drop(neg_test_sent.index, axis=0)
 
 print(len(X_neg), len(X_pos))
 
-"""## Create pairs of narratives [pos-pos; neg-neg; and pos-neg]"""
+"""## Create Pairs of Narratives [pos-pos; neg-neg; and pos-neg]"""
 
-# loop to create all <positive-positive> pairs as positive examples
+# Loop to create all <positive-positive> pairs as positive examples
 
 pos_pos_vec = []
 
@@ -300,7 +307,7 @@ for i in range(0,len(X_pos) ):
 df_pos_pos = pd.DataFrame(pos_pos_vec)
 df_pos_pos['y'] = 1
 
-# loop to creat all <negative-negative> pairs as positive examples
+# Loop to create all <negative-negative> pairs as positive examples
 neg_neg_vec = []
 
 for i in range(0,len(X_neg) ):
@@ -310,7 +317,7 @@ for i in range(0,len(X_neg) ):
 df_neg_neg = pd.DataFrame(neg_neg_vec)
 df_neg_neg['y'] = 1
 
-# loop to creat all <negative-positive> pairs as negative examples
+# Loop to create all <negative-positive> pairs as negative examples
 
 pos_neg_vec = []
 
@@ -329,7 +336,7 @@ print(y.value_counts())
 
 X.drop('y',axis=1, inplace = True)
 
-"""## Train a DNN of the best model"""
+"""## Train a DNN of the Best Model"""
 
 #https://machinelearningmastery.com/dropout-regularization-deep-learning-models-keras/
 
@@ -361,7 +368,7 @@ def train_ksmodels(X,Y, epoc = 5):
 
 nn_model = train_ksmodels(X,y, epoc = 50)
 
-# saving the model in tensorflow format
+# Save the model in tensorflow format
 from tensorflow import keras
 
 nn_model.save(os.path.join(PTH,'model/MyModel_tf'),
@@ -383,7 +390,7 @@ def predictions_siam(v, pos_v, neg_v, y_true):
       return([1,y_true])
     return([0,y_true])
 
-# normalize the Test data
+# Normalize the Test data
 pos_test_sent['y'] = 1
 neg_test_sent['y'] = 0
 concatenated_df = pd.concat([pos_test_sent, neg_test_sent], axis=0)
