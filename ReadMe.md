@@ -40,9 +40,9 @@ Please send any questions you might have about the code and/or the algorithm to 
 If you find this code useful for your research, please consider citing us:
 ```
 @article{Bartal2023ChatCB-PTSD,
-  title     = {Exploring ChatGPT’s Potential for Identifying Childbirth-Related Post-Traumatic Stress Disorder},
+  title     = {OpenAI’s Narrative Embeddings Can Be Used for Detecting Post-Traumatic Stress Following Childbirth Via Birth Stories},
   author    = {Bartal, Alon and Jagodnik, Kathleen M. and Dekel, Sharon},
-  journal   = {},
+  journal   = {Scientific Reports},
   volume    = {},
   number    = {},
   pages     = {from page– to page},
